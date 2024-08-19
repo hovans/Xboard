@@ -41,6 +41,18 @@ class TicketController extends Controller
 
     public function save(TicketSave $request)
     {
+
+    	   $message = $request->input('message');
+
+        $badwords = ['妈蛋','我靠','妈的','他妈','马勒戈壁','妈了','司马','死妈','叼你','你妈','我操','草了','操了','垃圾','破烂','残废','弱智','特么','我日','我干','尼玛','泥马','死全家','你妹','我干','我去','傻B','傻逼','操你','卧槽','我草','我日','我干','商务合作','原生通道','支付通道','支付合作','三方支付','费率低','低汇率','原生支付宝'];
+
+        foreach($badwords as $word){
+        	if(strpos($message,$word)!==false){
+        		throw new \Exception(__('Failed to open tickets'));
+        	}
+        }
+        
+    	   
         try{
             DB::beginTransaction();
             if ((int)Ticket::where('status', 0)->where('user_id', $request->user['id'])->lockForUpdate()->count()) {
