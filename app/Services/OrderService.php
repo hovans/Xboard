@@ -49,6 +49,10 @@ class OrderService
                     break;
                 case 'reset_price':
                     $this->buyByResetTraffic();
+                // 只在 reset_price 情况下检查并更新到期时间
+                if ($this->user->expired_at < time() || $this->user->expired_at < strtotime('+1 month')) {
+                    $this->user->expired_at = strtotime('+1 month');
+                }
                     break;
                 default:
                     $this->buyByPeriod($order, $plan);
@@ -99,7 +103,7 @@ class OrderService
             } else {
                 $order->total_amount = $order->total_amount - $order->surplus_amount;
             }
-        } else if ($user->expired_at > time() && $order->plan_id == $user->plan_id) { // 用户订阅未过期且购买订阅与当前订阅相同 === 续费
+        } else if ($order->plan_id == $user->plan_id) { // 用户订阅未过期且购买订阅与当前订阅相同 === 续费
             $order->type = Order::TYPE_RENEWAL;
         } else { // 新购
             $order->type = Order::TYPE_NEW_PURCHASE;
@@ -273,6 +277,22 @@ class OrderService
         if ($this->user->expired_at === NULL) $this->buyByResetTraffic();
         // 新购
         if ($order->type === 1) $this->buyByResetTraffic();
+
+        // 如果 plan id 是 5 或者 24，且流量已经使用完则马上重置流量
+        if (in_array($plan->id, [5, 24]) && $this->user->transfer_enable <= $this->user->u + $this->user->d) {
+            $this->user->expired_at = time();
+            $this->buyByResetTraffic();
+        }
+        // 如果订单类型是续费（type 为 2），则检查到期时间
+        if ($order->type === 2) {
+            // 如果到期时间小于当前时间，或者到期时间小于一个月
+        if ($this->user->expired_at < time() || ($this->user->expired_at < strtotime('+1 month') && ($this->user->u + $this->user->d) >= $this->user->transfer_enable)) {
+                // 将用户的到期时间设置为当前时间
+                $this->user->expired_at = time();
+                $this->buyByResetTraffic();
+            }
+        }
+        
         $this->user->plan_id = $plan->id;
         $this->user->group_id = $plan->group_id;
         $this->user->expired_at = $this->getTime($order->period, $this->user->expired_at);
