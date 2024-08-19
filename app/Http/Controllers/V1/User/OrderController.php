@@ -99,9 +99,9 @@ class OrderController extends Controller
         }
 
 
-        if (!$plan->show && $plan->renew && !$userService->isAvailable($user)) {
-            return $this->fail([400, __('This subscription has expired, please change to another subscription')]);
-        }
+        // if (!$plan->show && $plan->renew && !$userService->isAvailable($user)) {
+        //     return $this->fail([400, __('This subscription has expired, please change to another subscription')]);
+        // }
 
         try{
             DB::beginTransaction();
