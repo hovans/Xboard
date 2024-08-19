@@ -80,7 +80,7 @@ class MailService
      *   - error: 如果邮件发送失败，包含错误信息；否则为 null
      * @throws \InvalidArgumentException 如果 $params 参数缺少必要的字段，抛出此异常
      */
-    public static function sendEmail(array $params)
+public static function sendEmail(array $params)
     {
         if (admin_setting('email_host')) {
             \Config::set('mail.host', admin_setting('email_host', config('mail.host')));
@@ -94,6 +94,9 @@ class MailService
         $email = $params['email'];
         $subject = $params['subject'];
         $params['template_name'] = 'mail.' . admin_setting('email_template', 'default') . '.' . $params['template_name'];
+
+        $params['template_value']['email'] = $email;
+        
         try {
             \Mail::send(
                 $params['template_name'],
@@ -116,4 +119,5 @@ class MailService
         \App\Models\MailLog::create($log);
         return $log;
     }
+}
 }
