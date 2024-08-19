@@ -8,31 +8,21 @@ bind-address: "*"
 mode: rule
 log-level: info
 external-controller: 127.0.0.1:9090
-
+hosts:
+  mtalk.google.com: 108.177.125.188
+  raw.githubusercontent.com: 151.101.76.133
 dns:
   enable: true
-  # listen: 0.0.0.0:53
-  ipv6: false
-
-  default-nameserver:
-    - 223.5.5.5
-    - 119.29.29.29
+  ipv6: true
+  listen: '127.0.0.1:5334'
+  default-nameserver: [180.184.1.1, 119.29.29.29, 223.5.5.5]
   enhanced-mode: fake-ip
   fake-ip-range: 198.18.0.1/16
   use-hosts: true
-  nameserver:
-    - https://doh.pub/dns-query
-    - https://dns.alidns.com/dns-query
-  fallback:
-    - https://doh.dns.sb/dns-query
-    - https://dns.cloudflare.com/dns-query
-    - https://dns.twnic.tw/dns-query
-    - tls://8.8.4.4:853
-  fallback-filter:
-    geoip: true
-    ipcidr:
-      - 240.0.0.0/4
-      - 0.0.0.0/32
+  nameserver-policy: { +.pphimalayanrt.com: 223.5.5.5, st.dl.eccdnx.com: 223.5.5.5, +.tmall.com: 223.5.5.5, +.taobao.com: 223.5.5.5, +.alicdn.com: 223.5.5.5, +.aliyun.com: 223.5.5.5, +.alipay.com: 223.5.5.5, +.alibaba.com: 223.5.5.5, +.qq.com: 119.29.29.29, +.tencent.com: 119.29.29.29, +.weixin.com: 119.29.29.29, +.qpic.cn: 119.29.29.29, +.jd.com: 119.29.29.29, +.bilibili.com: 119.29.29.29, +.hdslb.com: 119.29.29.29, +.163.com: 119.29.29.29, +.126.com: 119.29.29.29, +.126.net: 119.29.29.29, +.127.net: 119.29.29.29, +.netease.com: 119.29.29.29, +.baidu.com: 223.5.5.5, +.bdstatic.com: 223.5.5.5, +.bilivideo.+: 119.29.29.29, +.iqiyi.com: 119.29.29.29, +.douyinvod.com: 180.184.1.1, +.douyin.com: 180.184.1.1, +.douyincdn.com: 180.184.1.1, +.douyinpic.com: 180.184.1.1, +.feishu.cn: 180.184.1.1 }
+  nameserver: ['tls://223.5.5.5:853', 'https://223.6.6.6/dns-query', 'https://120.53.53.53/dns-query']
+  fallback: ['https://101.101.101.101/dns-query', 'https://208.67.220.220/dns-query', 'https://doh.mullvad.net/dns-query']
+  fallback-filter: { geoip: true, ipcidr: [240.0.0.0/4, 0.0.0.0/32, 223.75.236.241/32, 182.43.124.6/32, 106.74.25.198/32, 183.192.65.101/32], domain: [+.google.cn, +.youtu0.com, +.youtunice.com, +.youtu6.shop, +.youtu7.shop, +.youtu8.shop, +.youtulink3.top, +.youtulink4.top, +.jsdelivr.net, +.proton.me] }
 
 proxies:
 
@@ -44,7 +34,12 @@ proxy-groups:
 rules:
   # 自定义规则
   ## 您可以在此处插入您补充的自定义规则（请注意保持缩进）
-
+  - DOMAIN-SUFFIX,steamcontent.com,DIRECT
+  - DOMAIN-SUFFIX,steamstatic.com,DIRECT
+  - DOMAIN-SUFFIX,steamserver.net,DIRECT
+  - DOMAIN-SUFFIX,test.steampowered.com,DIRECT
+  - DOMAIN-SUFFIX,api.steampowered.com,DIRECT
+  - DOMAIN-SUFFIX,rmbgame.net,DIRECT
   # Google 中国服务
   - DOMAIN-SUFFIX,services.googleapis.cn,$app_name
   - DOMAIN-SUFFIX,xn--ngstr-lra8j.com,$app_name
