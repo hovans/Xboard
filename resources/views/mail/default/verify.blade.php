@@ -16,7 +16,7 @@
                         </tr>
                         <tr>
                             <td style="font-size:14px;color:#333;padding:24px 40px 0 40px">
-                                尊敬的用户您好！
+                                尊敬的用户{{$email}}，您好！
                                 <br />
                                 <br />
                                 您的验证码是：{{$code}}，请在 5 分钟内进行验证。如果该验证码不为您本人申请，请无视。
